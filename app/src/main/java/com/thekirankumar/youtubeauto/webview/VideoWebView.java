@@ -144,6 +144,28 @@ public class VideoWebView extends VideoEnabledWebView {
         loadUrl(s);
     }
 
+    public void enableYouTubeEnhancements() {
+        loadUrl("javascript:(function(){" +
+                "if(window.__carstreamProEnhancements){return;}" +
+                "window.__carstreamProEnhancements=true;" +
+                "var hide=function(){" +
+                "var selectors=['#player-ads','ytd-ad-slot-renderer','ytd-promoted-sparkles-web-renderer','.ytp-ad-overlay-container','.ytp-ad-message-container','.ytp-ad-player-overlay'];" +
+                "for(var i=0;i<selectors.length;i++){var nodes=document.querySelectorAll(selectors[i]);for(var j=0;j<nodes.length;j++){nodes[j].style.display='none';}}" +
+                "};" +
+                "var skip=function(){" +
+                "var btn=document.querySelector('.ytp-ad-skip-button,.ytp-ad-skip-button-modern,button.ytp-ad-skip-button-modern,button.ytp-skip-ad-button');" +
+                "if(btn){btn.click();}" +
+                "var player=document.querySelector('.html5-video-player');" +
+                "var video=document.querySelector('video');" +
+                "if(player&&video&&player.classList.contains('ad-showing')&&isFinite(video.duration)&&video.duration>0){video.currentTime=Math.max(0,video.duration-0.05);}" +
+                "hide();" +
+                "};" +
+                "hide();skip();" +
+                "new MutationObserver(function(){skip();}).observe(document.documentElement,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});" +
+                "setInterval(skip,750);" +
+                "})();");
+    }
+
     public void showKeyboardIfInput() {
         String s = "javascript:setTimeout(function() {" +
                 "if(document.activeElement instanceof HTMLInputElement) {" +
