@@ -11,4 +11,28 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/pro_settings_category">
+
+        <CheckBoxPreference
+            android:key="pref_pro_adblock"
+            android:defaultValue="true"
+            android:title="@string/pro_adblock_title"
+            android:summary="@string/pro_adblock_summary" />
+
+        <CheckBoxPreference
+            android:key="pref_pro_auto_fullscreen"
+            android:defaultValue="true"
+            android:title="@string/pro_auto_fullscreen_title"
+            android:summary="@string/pro_auto_fullscreen_summary" />
+
+        <ListPreference
+            android:key="pref_pro_display_mode"
+            android:defaultValue="cover"
+            android:title="@string/pro_display_mode_title"
+            android:summary="@string/pro_display_mode_summary"
+            android:entries="@array/pro_display_mode_entries"
+            android:entryValues="@array/pro_display_mode_values" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>
