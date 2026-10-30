@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CarStream</string>
+    <string name="app_name">CarStream Pro</string>
     <string name="car_service_name">CarStream</string>
     <string name="app_name_player">CarStream player</string>
     <string name="channel_name">CarStream Channel</string>
