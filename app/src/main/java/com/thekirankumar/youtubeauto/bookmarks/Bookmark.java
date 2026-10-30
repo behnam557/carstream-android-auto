@@ -2,13 +2,11 @@ package com.thekirankumar.youtubeauto.bookmarks;
 
 import android.support.annotation.IdRes;
 
-import io.realm.RealmObject;
-
 /**
  * Created by kiran.kumar on 24/01/18.
  */
 
-public class Bookmark extends RealmObject {
+public class Bookmark {
     private String title;
     private String faviconPath;
     private @IdRes
@@ -38,6 +36,10 @@ public class Bookmark extends RealmObject {
         this.thumbnailResource = thumbnailRes;
         this.preventDelete = true;
         this.createdAt = url.hashCode();
+    }
+
+    public boolean isValid() {
+        return true;
     }
 
     public boolean isPreventDelete() {
