@@ -25,11 +25,6 @@ import com.thekirankumar.youtubeauto.utils.MemoryStorage;
 
 import java.util.ArrayList;
 
-import io.realm.OrderedCollectionChangeSet;
-import io.realm.OrderedRealmCollectionChangeListener;
-import io.realm.Realm;
-import io.realm.RealmResults;
-
 /**
  * Created by kiran.kumar on 24/01/18.
  */
@@ -38,7 +33,8 @@ public class BookmarksFragment extends Fragment implements BookmarksClickCallbac
     public static final float BOOKMARK_VIEW_SIZE_IN_DP = 180;
     private BookmarksClickCallback listener;
     private RecyclerView recyclerView;
-    private RealmResults<Bookmark> bookmarks;
+    private ArrayList<Bookmark> bookmarks;
+    private BookmarksAdapter bookmarksAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -86,25 +82,12 @@ public class BookmarksFragment extends Fragment implements BookmarksClickCallbac
         GridAutofitLayoutManager gridAutofitLayoutManager = new GridAutofitLayoutManager(getContext(), (int) px);
         recyclerView.setLayoutManager(gridAutofitLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        Realm realm = Realm.getDefaultInstance();
-
-        final ArrayList<Bookmark> preburntBookmarks = getPreburntBookmarks();
-        this.bookmarks = realm.where(Bookmark.class).sort("createdAt").findAll();
-        preburntBookmarks.addAll(bookmarks);
-        final BookmarksAdapter bookmarksAdapter = new BookmarksAdapter(preburntBookmarks);
+        this.bookmarks = BookmarkStore.load(getContext());
+        final ArrayList<Bookmark> displayBookmarks = getPreburntBookmarks();
+        displayBookmarks.addAll(bookmarks);
+        bookmarksAdapter = new BookmarksAdapter(displayBookmarks);
         bookmarksAdapter.setBookmarksClickCallback(this);
         recyclerView.setAdapter(bookmarksAdapter);
-        bookmarks.addChangeListener(new OrderedRealmCollectionChangeListener<RealmResults<Bookmark>>() {
-            @Override
-            public void onChange(@NonNull RealmResults<Bookmark> bookmarks, @javax.annotation.Nullable OrderedCollectionChangeSet changeSet) {
-                if(isAdded() && getContext()!=null) {
-                    ArrayList<Bookmark> newBookmarks = new ArrayList<>(getPreburntBookmarks());
-                    newBookmarks.addAll(bookmarks);
-                    bookmarksAdapter.setBookmarks(newBookmarks);
-                    bookmarksAdapter.notifyDataSetChanged();
-                }
-            }
-        });
         bookmarksAdapter.notifyDataSetChanged();
 
         recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -124,6 +107,16 @@ public class BookmarksFragment extends Fragment implements BookmarksClickCallbac
     @Override
     public void onResume() {
         super.onResume();
+        refreshBookmarks();
+    }
+
+    private void refreshBookmarks() {
+        if (getContext() == null || bookmarksAdapter == null) return;
+        bookmarks = BookmarkStore.load(getContext());
+        ArrayList<Bookmark> displayBookmarks = getPreburntBookmarks();
+        displayBookmarks.addAll(bookmarks);
+        bookmarksAdapter.setBookmarks(displayBookmarks);
+        bookmarksAdapter.notifyDataSetChanged();
     }
 
     private ArrayList<Bookmark> getPreburntBookmarks() {
@@ -182,6 +175,7 @@ public class BookmarksFragment extends Fragment implements BookmarksClickCallbac
     @Override
     public void onBookmarkDelete(Bookmark bookmark) {
         listener.onBookmarkDelete(bookmark);
+        refreshBookmarks();
     }
 
     @Override
