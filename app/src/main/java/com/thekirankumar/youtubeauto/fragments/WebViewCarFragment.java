@@ -1200,7 +1200,7 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
 
     @Override
     public void onBookmarkDelete(Bookmark bookmark) {
-        BookmarkUtils.deleteBookmark(bookmark);
+        BookmarkUtils.deleteBookmark(getContext(), bookmark);
     }
 
     @Override
