@@ -1,0 +1,12 @@
+<resources>
+    <string-array name="pro_display_mode_entries">
+        <item>Fit</item>
+        <item>Fill</item>
+        <item>Crop</item>
+    </string-array>
+    <string-array name="pro_display_mode_values">
+        <item>contain</item>
+        <item>fill</item>
+        <item>cover</item>
+    </string-array>
+</resources>
