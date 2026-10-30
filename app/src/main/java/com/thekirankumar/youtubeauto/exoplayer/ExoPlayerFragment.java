@@ -137,7 +137,7 @@ public class ExoPlayerFragment extends Fragment implements Player.EventListener 
             }
         });
         player = ExoPlayerFactory.newSimpleInstance(
-                new DefaultRenderersFactory(getContext()),
+                getContext(),
                 new DefaultTrackSelector(),
                 new DefaultLoadControl());
         playerView.setPlayer(player);
@@ -255,7 +255,7 @@ public class ExoPlayerFragment extends Fragment implements Player.EventListener 
     }
 
     @Override
-    public void onTimelineChanged(Timeline timeline, Object manifest) {
+    public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
 
     }
 
