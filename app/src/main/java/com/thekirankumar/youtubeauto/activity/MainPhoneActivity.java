@@ -1,45 +1,22 @@
 package com.thekirankumar.youtubeauto.activity;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.support.v7.app.AppCompatActivity;
 
-import com.thekirankumar.youtubeauto.R;
-import com.thekirankumar.youtubeauto.fragments.WebViewCarFragment;
-import com.thekirankumar.youtubeauto.exoplayer.ExoPlayerFragment;
-
-
-public class MainPhoneActivity extends AppCompatActivity implements ExoPlayerFragment.OnFragmentInteractionListener {
+/**
+ * Lightweight phone launcher for CarStream Pro.
+ *
+ * The original phone-side WebView is intentionally skipped because it relies on
+ * a legacy browser stack. Android Auto playback continues to use CarService and
+ * WebViewCarFragment independently.
+ */
+public class MainPhoneActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_phone_main);
-    }
-
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        return super.onKeyUp(keyCode, event);
-    }
-
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return super.onKeyDown(keyCode, event);
-    }
-
-    @Override
-    public void onNativePlayerControlsVisibilityChange(int visibility) {
-
-    }
-
-    @Override
-    public WebViewCarFragment.AspectRatio getAspectRatio() {
-        return WebViewCarFragment.AspectRatio.CONTAIN;
+        startActivity(new Intent(this, SettingsPhoneActivity.class));
+        finish();
     }
 }
