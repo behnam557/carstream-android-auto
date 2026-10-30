@@ -30,6 +30,9 @@ android {
             maven {
                 url "https://jitpack.io"
             }
+            maven {
+                url "https://repo.spring.io/libs-milestone"
+            }
         }
     }
     compileOptions {
@@ -70,7 +73,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:26.1.0'
     compile 'com.google.android.exoplayer:exoplayer:2.6.1'
     compile 'com.github.javiersantos:AppUpdater:2.6.4'
-    compile 'eu.chainfire:libsuperuser:1.0.0.+'
+    compile 'eu.chainfire:libsuperuser:1.1.1'
 
 }
 
