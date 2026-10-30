@@ -30,10 +30,7 @@ android {
             maven {
                 url "https://jitpack.io"
             }
-            maven {
-                url "https://repo.spring.io/libs-milestone"
             }
-        }
     }
     compileOptions {
         // This went in on 2019-05-25 because okhttp3-4.0.0-alpha01 contains Java 8 bytecode.
@@ -71,7 +68,7 @@ dependencies {
     compile 'com.squareup.okio:okio:2.2.2' // Needed as dependency for okhttp3
     compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support:recyclerview-v7:26.1.0'
-    compile 'com.google.android.exoplayer:exoplayer:2.6.1'
+    compile 'com.google.android.exoplayer:exoplayer:2.9.6'
     compile 'com.github.javiersantos:AppUpdater:2.6.4'
     compile 'eu.chainfire:libsuperuser:1.1.1'
 
