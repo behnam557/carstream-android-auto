@@ -417,7 +417,7 @@ public class WebViewPhoneFragment extends CarFragment implements BookmarksClickC
 
     @Override
     public void onBookmarkDelete(Bookmark bookmark) {
-        BookmarkUtils.deleteBookmark(bookmark);
+        BookmarkUtils.deleteBookmark(getContext(), bookmark);
     }
 
     @Override
