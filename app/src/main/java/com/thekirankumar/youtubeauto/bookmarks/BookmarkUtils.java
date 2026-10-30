@@ -9,8 +9,6 @@ import com.thekirankumar.youtubeauto.webview.VideoWebView;
 
 import java.io.ByteArrayOutputStream;
 
-import io.realm.Realm;
-
 /**
  * Created by kiran.kumar on 24/01/18.
  */
@@ -24,8 +22,6 @@ public class BookmarkUtils {
                 final Bookmark bookmark = new Bookmark();
                 bookmark.setTitle(webView.getTitle());
                 bookmark.setUrl(webView.getUrl());
-                Realm realm = Realm.getDefaultInstance();
-
                 Bitmap bitmap = Bitmap.createBitmap(webView.getMeasuredWidth(), webView.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
                 float aspectRatio = (float) webView.getMeasuredWidth() / (float) webView.getMeasuredHeight();
                 Canvas c = new Canvas(bitmap);
@@ -49,23 +45,13 @@ public class BookmarkUtils {
                 }
 
                 bookmark.setCreatedAt(System.currentTimeMillis());
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm1) {
-                        realm1.insert(bookmark);
-                    }
-                });
+                BookmarkStore.add(webView.getContext(), bookmark);
             }
         });
     }
 
-    public static void deleteBookmark(final Bookmark bookmark) {
-        Realm realm = Realm.getDefaultInstance();
-        realm.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm1) {
-                bookmark.deleteFromRealm();
-            }
-        });
+    public static void deleteBookmark(android.content.Context context, final Bookmark bookmark) {
+        BookmarkStore.delete(context, bookmark);
     }
 }
+
