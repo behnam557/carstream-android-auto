@@ -51,6 +51,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -80,6 +81,7 @@ import com.thekirankumar.youtubeauto.utils.MyExceptionHandler;
 import com.thekirankumar.youtubeauto.utils.MyRecognitionListener;
 import com.thekirankumar.youtubeauto.utils.SearchMode;
 import com.thekirankumar.youtubeauto.utils.WebviewUtils;
+import com.thekirankumar.youtubeauto.utils.YouTubeAdBlocker;
 import com.thekirankumar.youtubeauto.webview.JavascriptCallback;
 import com.thekirankumar.youtubeauto.webview.VideoEnabledWebChromeClient;
 import com.thekirankumar.youtubeauto.webview.VideoWebView;
@@ -1269,6 +1271,7 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
             progressBar.setVisibility(View.GONE);
             getSharedPrefs().edit().putString(HOME_URL, url).commit();
             webView.discoverVideoElements();
+            webView.enableYouTubeEnhancements();
             WebviewUtils.injectFileListingHack(webView);
             BroadcastFromUI.broadcastTitle(getContext(), view.getTitle());
 
@@ -1287,6 +1290,24 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
             super.onReceivedError(view, request, error);
             BroadcastFromUI.broadCastError(getContext(), error.toString());
+        }
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+            if (YouTubeAdBlocker.shouldBlock(url)) {
+                return YouTubeAdBlocker.emptyResponse();
+            }
+            return super.shouldInterceptRequest(view, url);
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            String url = request != null && request.getUrl() != null ? request.getUrl().toString() : null;
+            if (YouTubeAdBlocker.shouldBlock(url)) {
+                return YouTubeAdBlocker.emptyResponse();
+            }
+            return super.shouldInterceptRequest(view, request);
         }
 
         @Override
