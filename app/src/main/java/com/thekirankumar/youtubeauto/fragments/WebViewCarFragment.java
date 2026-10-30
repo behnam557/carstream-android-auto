@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.RemoteException;
+import android.preference.PreferenceManager;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.support.annotation.NonNull;
@@ -717,6 +718,28 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
         setAspectRatio(AspectRatio.values()[ordinal]);
     }
 
+    private SharedPreferences getProPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(getContext());
+    }
+
+    private boolean isProAdBlockEnabled() {
+        return getProPreferences().getBoolean("pref_pro_adblock", true);
+    }
+
+    private boolean isAutoFullscreenEnabled() {
+        return getProPreferences().getBoolean("pref_pro_auto_fullscreen", true);
+    }
+
+    private AspectRatio getPreferredAspectRatio() {
+        String mode = getProPreferences().getString("pref_pro_display_mode", "cover");
+        if ("fill".equalsIgnoreCase(mode)) {
+            return AspectRatio.FILL;
+        } else if ("contain".equalsIgnoreCase(mode)) {
+            return AspectRatio.CONTAIN;
+        }
+        return AspectRatio.COVER;
+    }
+
     private SharedPreferences getSharedPrefs() {
         if (sharedPrefs != null) {
             return sharedPrefs;
@@ -992,9 +1015,13 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
 
     @Override
     public void onVideoElementDiscovered() {
+        if (isAutoFullscreenEnabled()) {
+            fullScreenRequested = true;
+        }
         if (fullScreenRequested) {
             webView.requestFullScreen();
         }
+        currentAspectRatio = getPreferredAspectRatio();
         if (currentAspectRatio != null) {
             webView.setAspectRatio(currentAspectRatio.name().toLowerCase());
         }
@@ -1271,7 +1298,9 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
             progressBar.setVisibility(View.GONE);
             getSharedPrefs().edit().putString(HOME_URL, url).commit();
             webView.discoverVideoElements();
-            webView.enableYouTubeEnhancements();
+            if (isProAdBlockEnabled()) {
+                webView.enableYouTubeEnhancements();
+            }
             WebviewUtils.injectFileListingHack(webView);
             BroadcastFromUI.broadcastTitle(getContext(), view.getTitle());
 
@@ -1294,7 +1323,7 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-            if (YouTubeAdBlocker.shouldBlock(url)) {
+            if (isProAdBlockEnabled() && YouTubeAdBlocker.shouldBlock(url)) {
                 return YouTubeAdBlocker.emptyResponse();
             }
             return super.shouldInterceptRequest(view, url);
@@ -1304,7 +1333,7 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             String url = request != null && request.getUrl() != null ? request.getUrl().toString() : null;
-            if (YouTubeAdBlocker.shouldBlock(url)) {
+            if (isProAdBlockEnabled() && YouTubeAdBlocker.shouldBlock(url)) {
                 return YouTubeAdBlocker.emptyResponse();
             }
             return super.shouldInterceptRequest(view, request);
