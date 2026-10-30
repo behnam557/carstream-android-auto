@@ -16,8 +16,6 @@ import com.thekirankumar.youtubeauto.utils.AspectRatioFrameLayout;
 
 import java.util.ArrayList;
 
-import io.realm.RealmResults;
-
 /**
  * Created by kiran.kumar on 24/01/18.
  */
