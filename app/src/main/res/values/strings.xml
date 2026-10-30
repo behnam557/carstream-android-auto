@@ -31,4 +31,11 @@
     <string name="settings_car_disable_notifications_title">Disable notifications</string>
     <string name="settings_car_disable_notifications_summary">Disable head-up notifications in Android Auto</string>
 
+    <string name="pro_settings_category">Pro player</string>
+    <string name="pro_adblock_title">YouTube ad filtering</string>
+    <string name="pro_adblock_summary">Block common ad requests and skip supported YouTube in-stream ads</string>
+    <string name="pro_auto_fullscreen_title">Auto full-screen video</string>
+    <string name="pro_auto_fullscreen_summary">Enter full-screen automatically when a video is detected</string>
+    <string name="pro_display_mode_title">Video display mode</string>
+    <string name="pro_display_mode_summary">Fit keeps the whole picture, Fill stretches it, Crop fills the screen and trims the edges</string>
 </resources>
