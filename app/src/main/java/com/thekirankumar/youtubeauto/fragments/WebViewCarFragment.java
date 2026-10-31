@@ -448,14 +448,20 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
                     fullScreenRequested = false;
                     fullScreenButton.setActivated(false);
                     fullScreenButton.setImageResource(R.drawable.ic_fullscreen);
-                    webView.exitFullScreen();
+                    showToolbar();
+                    showCornerControls();
                     SharedPreferences car = getContext().getSharedPreferences(PREFS, Context.MODE_MULTI_PROCESS);
                     car.edit().putBoolean(FULLSCREEN_KEY, false).apply();
                 } else {
                     fullScreenRequested = true;
                     fullScreenButton.setActivated(true);
-                    webView.requestFullScreen();
                     fullScreenButton.setImageResource(R.drawable.ic_exit_fullscreen);
+                    hideToolbar();
+                    hideCornerControls(true);
+                    currentAspectRatio = getPreferredAspectRatio();
+                    if (currentAspectRatio != null) {
+                        webView.setAspectRatio(currentAspectRatio.name().toLowerCase());
+                    }
                     SharedPreferences car = getContext().getSharedPreferences(PREFS, Context.MODE_MULTI_PROCESS);
                     car.edit().putBoolean(FULLSCREEN_KEY, true).apply();
                 }
@@ -563,7 +569,7 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
                             if (goBack()) return true;
                             break;
                         case KeyEvent.KEYCODE_DPAD_UP:
-                            if (webView.isVideoFullscreen()) {
+                            if (fullScreenRequested || webView.isVideoFullscreen()) {
                                 showAndHideToolbarAnimation();
                                 showAndHideCornerControlsAnimation();
                                 return true;
