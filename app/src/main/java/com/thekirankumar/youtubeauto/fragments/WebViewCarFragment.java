@@ -996,6 +996,10 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
         switch (event) {
             case "playing":
                 playerState = PlaybackState.STATE_PLAYING;
+                if (isAutoFullscreenEnabled() && !webView.isVideoFullscreen()) {
+                    fullScreenRequested = true;
+                    webView.requestFullScreen();
+                }
                 BroadcastFromUI.broadCastPlaying(getContext(), webView.getTitle());
                 break;
             case "pause":
@@ -1013,9 +1017,10 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
 
     @Override
     public void onVideoElementDiscovered() {
-        if (isAutoFullscreenEnabled()) {
-            fullScreenRequested = true;
-        }
+        // Do not auto-enter full screen merely because the page contains a video element.
+        // YouTube home/search pages contain preview videos; entering full screen here can
+        // switch Android Auto to an empty video surface. Auto full-screen is triggered
+        // from the actual "playing" event instead.
         if (fullScreenRequested) {
             webView.requestFullScreen();
         }
