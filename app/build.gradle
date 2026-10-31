@@ -7,11 +7,11 @@ android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
-        applicationId "com.google.android.kk"
+        applicationId "com.behnam557.carstreampro"
         minSdkVersion 15
         targetSdkVersion 26
-        versionCode 39
-        versionName "2.1.0-pro"
+        versionCode 40
+        versionName "2.1.1-pro"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -70,6 +70,3 @@ dependencies {
     compile 'eu.chainfire:libsuperuser:1.1.1'
 
 }
-
-
-
