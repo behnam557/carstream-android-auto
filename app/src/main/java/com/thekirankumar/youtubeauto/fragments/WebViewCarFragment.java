@@ -996,9 +996,16 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
         switch (event) {
             case "playing":
                 playerState = PlaybackState.STATE_PLAYING;
-                if (isAutoFullscreenEnabled() && !webView.isVideoFullscreen()) {
-                    fullScreenRequested = true;
-                    webView.requestFullScreen();
+                if (isAutoFullscreenEnabled()) {
+                    // Keep the existing Android Auto WebView surface. Calling the page's
+                    // requestFullscreen() API creates a separate video surface that renders
+                    // black on current Android Auto builds.
+                    hideToolbar();
+                    hideCornerControls(true);
+                    currentAspectRatio = getPreferredAspectRatio();
+                    if (currentAspectRatio != null) {
+                        webView.setAspectRatio(currentAspectRatio.name().toLowerCase());
+                    }
                 }
                 BroadcastFromUI.broadCastPlaying(getContext(), webView.getTitle());
                 break;
@@ -1021,9 +1028,9 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
         // YouTube home/search pages contain preview videos; entering full screen here can
         // switch Android Auto to an empty video surface. Auto full-screen is triggered
         // from the actual "playing" event instead.
-        if (fullScreenRequested) {
-            webView.requestFullScreen();
-        }
+        // Do not invoke browser-level fullscreen here. It creates a black surface on
+        // current Android Auto. Fullscreen mode is implemented by hiding app chrome
+        // while keeping the working WebView/video surface.
         currentAspectRatio = getPreferredAspectRatio();
         if (currentAspectRatio != null) {
             webView.setAspectRatio(currentAspectRatio.name().toLowerCase());
@@ -1326,19 +1333,15 @@ public class WebViewCarFragment extends CarFragment implements MainCarActivity.A
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
-            if (isProAdBlockEnabled() && YouTubeAdBlocker.shouldBlock(url)) {
-                return YouTubeAdBlocker.emptyResponse();
-            }
+            // Do not block YouTube network requests. Current YouTube bundles advertising
+            // and playback dependencies closely enough that request-level filtering can
+            // blank the whole page. Ad handling is done page-side instead.
             return super.shouldInterceptRequest(view, url);
         }
 
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-            String url = request != null && request.getUrl() != null ? request.getUrl().toString() : null;
-            if (isProAdBlockEnabled() && YouTubeAdBlocker.shouldBlock(url)) {
-                return YouTubeAdBlocker.emptyResponse();
-            }
             return super.shouldInterceptRequest(view, request);
         }
 
