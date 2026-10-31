@@ -155,9 +155,6 @@ public class VideoWebView extends VideoEnabledWebView {
                 "var skip=function(){" +
                 "var btn=document.querySelector('.ytp-ad-skip-button,.ytp-ad-skip-button-modern,button.ytp-ad-skip-button-modern,button.ytp-skip-ad-button');" +
                 "if(btn){btn.click();}" +
-                "var player=document.querySelector('.html5-video-player');" +
-                "var video=document.querySelector('video');" +
-                "if(player&&video&&player.classList.contains('ad-showing')&&isFinite(video.duration)&&video.duration>0){video.currentTime=Math.max(0,video.duration-0.05);}" +
                 "hide();" +
                 "};" +
                 "hide();skip();" +
